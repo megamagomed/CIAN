@@ -5,18 +5,22 @@ url = "https://www.cian.ru/cat.php?currency=2&deal_type=sale&engine_version=2&ma
 response = requests.get(url).text
 response_parser = BeautifulSoup(response, 'html.parser')
 geo_group = response_parser.select('[data-name=LinkArea]')
-# geo_group = response_parser.select('[data-name=SpecialGeo]')
 list_of_adress = []
 
+
 for element in geo_group:
+    link = element.find('a')
     temporary_list = []
-    geo_location = element.select('[data-name=SpecialGeo]')[0]
-    for div in geo_location.find_all('div'):
-        if div.text:
-            temporary_list.append(div.text)
+    geo_location = element.select('[data-name=SpecialGeo]')
+
+    for location in geo_location:
+        for div in location.find_all('div'):
+            if div.text:
+                temporary_list.append(div.text)
     if temporary_list:
-        list_of_adress.append(temporary_list)
-    
+        list_of_adress.append((temporary_list,link['href']))
+
+        
 print(list_of_adress)
 
 
